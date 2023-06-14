@@ -22,6 +22,10 @@ public class EmployeeAttendanceService {
 
 	}
 
+	public void getYesterdayPunchData(int employeeId) {
+		employeeAttendanceDAO.getYesterdayPunchInAndPunchOut(employeeId);
+	}
+
 	public LocalDateTime convertToDateTime(Cell cell) {
 		if (cell.getCellType() == CellType.NUMERIC) {
 			// Assuming the cell contains a date/time value

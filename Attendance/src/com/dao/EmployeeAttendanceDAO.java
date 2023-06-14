@@ -6,4 +6,6 @@ public interface EmployeeAttendanceDAO {
 	void save(EmployeeAttendance employeeAttendance);
 
 	int getNextAttendanceRequestIndex(int employeeId);
+
+	void getYesterdayPunchInAndPunchOut(int employeeId);
 }

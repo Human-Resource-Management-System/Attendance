@@ -36,6 +36,12 @@ public class AttendanceController {
 		return "attendanceform";
 	}
 
+	@RequestMapping(value = "/punchData", method = RequestMethod.GET)
+	public void getPunchData() {
+		employeeAttendanceService.getYesterdayPunchData(1);
+		System.out.println("completed");
+	}
+
 	@RequestMapping(value = "/uploadAttendance", method = RequestMethod.POST)
 	public ResponseEntity<String> uploadEmployeeAttendance(@RequestParam("file") MultipartFile file) {
 		try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
