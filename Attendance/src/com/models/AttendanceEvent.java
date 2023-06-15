@@ -1,12 +1,9 @@
 package com.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class AttendanceEvent {
-	@JsonProperty("time")
+
 	private String time;
 
-	@JsonProperty("event")
 	private String event;
 
 	public AttendanceEvent(String time, String event) {
