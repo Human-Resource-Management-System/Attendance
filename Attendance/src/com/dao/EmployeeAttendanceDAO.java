@@ -10,4 +10,6 @@ public interface EmployeeAttendanceDAO {
 	int getNextAttendanceRequestIndex(int employeeId);
 
 	List<Object[]> getYesterdayPunchInAndPunchOut(int employeeId);
+
+	List<Object[]> getPunchInAndPunchOutDataForMonthAndEmployee(int employeeId, int selectedMonth);
 }

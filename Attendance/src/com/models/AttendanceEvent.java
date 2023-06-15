@@ -3,7 +3,6 @@ package com.models;
 public class AttendanceEvent {
 
 	private String time;
-
 	private String event;
 
 	public AttendanceEvent(String time, String event) {

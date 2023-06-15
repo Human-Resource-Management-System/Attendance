@@ -55,4 +55,18 @@ public class EmployeeAttendanceDAOImpl implements EmployeeAttendanceDAO {
 		return results;
 
 	}
+
+	@Override
+	public List<Object[]> getPunchInAndPunchOutDataForMonthAndEmployee(int employeeId, int selectedMonth) {
+		String queryString = "SELECT ea.punchIn, ea.punchOut FROM EmployeeAttendance ea "
+				+ "WHERE ea.attendanceId.employeeId = :employeeId " + "AND MONTH(ea.punchIn) = :selectedMonth";
+
+		Query query = entityManager.createQuery(queryString);
+		query.setParameter("employeeId", employeeId);
+		query.setParameter("selectedMonth", selectedMonth);
+
+		List<Object[]> results = query.getResultList();
+		return results;
+	}
+
 }
