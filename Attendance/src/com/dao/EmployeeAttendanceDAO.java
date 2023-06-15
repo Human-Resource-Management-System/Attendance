@@ -1,5 +1,7 @@
 package com.dao;
 
+import java.util.List;
+
 import com.models.EmployeeAttendance;
 
 public interface EmployeeAttendanceDAO {
@@ -7,5 +9,5 @@ public interface EmployeeAttendanceDAO {
 
 	int getNextAttendanceRequestIndex(int employeeId);
 
-	void getYesterdayPunchInAndPunchOut(int employeeId);
+	List<Object[]> getYesterdayPunchInAndPunchOut(int employeeId);
 }

@@ -2,5 +2,6 @@ com\models\EmployeeAttendanceId.class
 com\dao\EmployeeAttendanceDAO.class
 com\controllers\AttendanceController.class
 com\services\EmployeeAttendanceService.class
+com\models\AttendanceEvent.class
 com\implementations\EmployeeAttendanceDAOImpl.class
 com\models\EmployeeAttendance.class

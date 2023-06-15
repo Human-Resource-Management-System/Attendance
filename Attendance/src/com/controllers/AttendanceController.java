@@ -3,6 +3,7 @@ package com.controllers;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -15,9 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dao.EmployeeAttendanceDAO;
+import com.models.AttendanceEvent;
 import com.models.EmployeeAttendance;
 import com.models.EmployeeAttendanceId;
 import com.services.EmployeeAttendanceService;
@@ -36,10 +39,16 @@ public class AttendanceController {
 		return "attendanceform";
 	}
 
-	@RequestMapping(value = "/punchData", method = RequestMethod.GET)
-	public void getPunchData() {
-		employeeAttendanceService.getYesterdayPunchData(1);
-		System.out.println("completed");
+	@RequestMapping(value = "/punch", method = RequestMethod.GET)
+	public String punchdataform() {
+		return "punchdata";
+	}
+
+	@RequestMapping(value = "/punchData", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<AttendanceEvent> getPunchData() {
+		List<AttendanceEvent> formattedData = employeeAttendanceService.getYesterdayPunchData(1);
+		return formattedData;
 	}
 
 	@RequestMapping(value = "/uploadAttendance", method = RequestMethod.POST)

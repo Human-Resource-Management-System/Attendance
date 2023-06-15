@@ -35,11 +35,12 @@ public class EmployeeAttendanceDAOImpl implements EmployeeAttendanceDAO {
 	}
 
 	@Override
-	public void getYesterdayPunchInAndPunchOut(int employeeId) {
+	public List<Object[]> getYesterdayPunchInAndPunchOut(int employeeId) {
 		LocalDate yesterday = LocalDate.now().minusDays(1);
 		LocalDateTime startOfDay = LocalDateTime.of(yesterday, LocalTime.MIN);
 		LocalDateTime endOfDay = LocalDateTime.of(yesterday, LocalTime.MAX);
 
+		// query to get punch data from the 00:00 to 23:59:59 of yesterday
 		String queryString = "SELECT ea.punchIn, ea.punchOut FROM EmployeeAttendance ea "
 				+ "WHERE ea.attendanceId.employeeId = :employeeId " + "AND ea.punchIn >= :startOfDay "
 				+ "AND ea.punchOut <= :endOfDay";
@@ -50,12 +51,8 @@ public class EmployeeAttendanceDAOImpl implements EmployeeAttendanceDAO {
 		query.setParameter("endOfDay", endOfDay);
 
 		List<Object[]> results = query.getResultList();
-		for (Object[] row : results) {
-			LocalDateTime punchIn = (LocalDateTime) row[0];
-			LocalDateTime punchOut = (LocalDateTime) row[1];
-			System.out.println("Punch In: " + punchIn);
-			System.out.println("Punch Out: " + punchOut);
-		}
+
+		return results;
 
 	}
 }

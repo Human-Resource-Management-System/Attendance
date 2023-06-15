@@ -41,6 +41,9 @@
 			<version>4.3.9.RELEASE</version>
 		</dependency>
 
+
+		<!-- Servlet -->
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -78,6 +81,9 @@
 			<version>4.3.9.RELEASE</version>
 		</dependency>
 
+
+		<!-- Postgresql Driver -->
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -87,17 +93,17 @@
 
 		<!-- excel data reading -->
 
-			<dependency>
-				<groupId>org.apache.poi</groupId>
-				<artifactId>poi</artifactId>
-				<version>5.0.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.poi</groupId>
-				<artifactId>poi-ooxml</artifactId>
-				<version>5.0.0</version>
-			</dependency>
-		
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.0.0</version>
+		</dependency>
+
 
 		<!-- file upload dependencies -->
 
