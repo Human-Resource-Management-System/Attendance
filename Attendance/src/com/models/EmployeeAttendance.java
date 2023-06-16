@@ -22,12 +22,6 @@ public class EmployeeAttendance {
 	@Column(name = "eatn_punchsystem")
 	private String punchSystem;
 
-	// Constructors
-
-	public EmployeeAttendance() {
-		attendanceId = new EmployeeAttendanceId();
-	}
-
 	// Getters and Setters
 
 	public EmployeeAttendanceId getAttendanceId() {

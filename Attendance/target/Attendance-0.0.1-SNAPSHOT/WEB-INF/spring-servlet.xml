@@ -46,15 +46,8 @@
 		<property name="maxUploadSize" value="10485760" /> <!-- Maximum file size (in bytes) -->
 		<property name="maxInMemorySize" value="1048576" /> <!-- Maximum in-memory size (in bytes) -->
 	</bean>
+
 	
-	<!-- JSON  -->
-	<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-    <property name="objectMapper">
-        <bean class="com.fasterxml.jackson.databind.ObjectMapper">
-            <!-- Customize the ObjectMapper if needed -->
-        </bean>
-    </property>
-</bean>
 
 
 </beans>

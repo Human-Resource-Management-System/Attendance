@@ -16,10 +16,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dao.EmployeeAttendanceDAO;
+import com.google.gson.Gson;
 import com.models.AttendanceEvent;
 import com.models.EmployeeAttendance;
 import com.models.EmployeeAttendanceId;
@@ -27,6 +27,17 @@ import com.services.EmployeeAttendanceService;
 
 @Controller
 public class AttendanceController {
+
+	private EmployeeAttendance attendance;
+	private EmployeeAttendanceId attendanceId;
+	private Gson gson;
+
+	@Autowired
+	public AttendanceController(EmployeeAttendance attendance, EmployeeAttendanceId attendanceId, Gson gson) {
+		this.attendance = attendance;
+		this.attendanceId = attendanceId;
+		this.gson = gson;
+	}
 
 	@Autowired
 	private EmployeeAttendanceService employeeAttendanceService;
@@ -40,15 +51,25 @@ public class AttendanceController {
 	}
 
 	@RequestMapping(value = "/punch", method = RequestMethod.GET)
-	public String punchdataform() {
+	public String punchform() {
 		return "punchdata";
 	}
 
-	@RequestMapping(value = "/punchData", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public List<AttendanceEvent> getPunchData() {
-		List<AttendanceEvent> formattedData = employeeAttendanceService.getYesterdayPunchData(1);
-		return formattedData;
+	@RequestMapping(value = "/monthData", method = RequestMethod.GET)
+	public void monthPunchData() {
+		List<Object[]> results = employeeAttendanceDAO.getPunchInAndPunchOutDataForMonthAndEmployee(108, 6);
+		for (Object[] row : results) {
+			LocalDateTime punchIn = (LocalDateTime) row[0];
+			LocalDateTime punchOut = (LocalDateTime) row[1];
+			System.out.println(punchIn + "  " + punchOut);
+		}
+
+	}
+
+	@RequestMapping(value = "/punchData", method = RequestMethod.GET)
+	public ResponseEntity<String> getPunchData() {
+		List<AttendanceEvent> punchData = employeeAttendanceService.getYesterdayPunchData(1);
+		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(punchData));
 	}
 
 	@RequestMapping(value = "/uploadAttendance", method = RequestMethod.POST)
@@ -69,22 +90,15 @@ public class AttendanceController {
 				LocalDateTime punchOut = employeeAttendanceService.convertToDateTime(row.getCell(2));
 				String punchSystem = row.getCell(3).toString();
 
-				EmployeeAttendance attendance = new EmployeeAttendance();
 				attendance.setPunchIn(punchIn);
 				attendance.setPunchOut(punchOut);
 				attendance.setPunchSystem(punchSystem);
 
-				EmployeeAttendanceId attendanceId = attendance.getAttendanceId();
-				if (attendanceId == null) {
-					attendanceId = new EmployeeAttendanceId();
-					attendanceId.setEmployeeId(employeeId);
-					attendance.setAttendanceId(attendanceId);
-				} else if (attendanceId.getEmployeeId() == 0) {
-					attendanceId.setEmployeeId(employeeId);
-				}
-
+				attendanceId.setEmployeeId(employeeId);
 				int nextIndex = employeeAttendanceDAO.getNextAttendanceRequestIndex(employeeId);
 				attendanceId.setEmplPIndex(nextIndex);
+
+				attendance.setAttendanceId(attendanceId);
 
 				employeeAttendanceService.insertEmployeeAttendance(attendance);
 

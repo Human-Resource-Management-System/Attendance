@@ -20,6 +20,13 @@ public class EmployeeAttendanceService {
 	@Autowired
 	private EmployeeAttendanceDAO employeeAttendanceDAO;
 
+	private AttendanceEvent attendanceEvent;
+
+	@Autowired
+	public EmployeeAttendanceService(AttendanceEvent attendanceEvent) {
+		this.attendanceEvent = attendanceEvent;
+	}
+
 	@Transactional
 	public void insertEmployeeAttendance(EmployeeAttendance attendance) {
 		employeeAttendanceDAO.save(attendance);

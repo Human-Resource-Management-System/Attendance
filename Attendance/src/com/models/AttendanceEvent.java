@@ -10,6 +10,14 @@ public class AttendanceEvent {
 		this.event = event;
 	}
 
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public void setEvent(String event) {
+		this.event = event;
+	}
+
 	public String getTime() {
 		return time;
 	}
