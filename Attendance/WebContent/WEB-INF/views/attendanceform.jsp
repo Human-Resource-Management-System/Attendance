@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -106,7 +107,7 @@
                 <label for="fileInput" class="file-input-label">Select File</label>
                 <input type="file" class="form-control file-input" id="fileInput" accept=".xlsx, .xls">
             </div>
-            <button type="submit" id="upload" class="btn btn-primary download-button">Upload</button>
+            <button type="submit" id="upload"  class="btn btn-primary download-button">Upload</button>
         </form>
         <div id="uploadStatus"></div>
     </div>
@@ -147,14 +148,14 @@
                     console.log(response);
                     $('#uploadStatus').removeClass().addClass('attend-success-msg').text('File uploaded successfully.');
                     // Hide loading indicator
-                    $('.download-button').html('Upload');
+                    $('#upload').html('Upload');
                 },
                 error: function(xhr, status, error) {
                     // Handle error
                     console.log(error);
                     $('#uploadStatus').removeClass().addClass('attend-error-msg').text('Error uploading file.');
                     // Hide loading indicator
-                    $('.download-button').html('Upload');
+                    $('#upload').html('Upload');
                 }
             });
         });

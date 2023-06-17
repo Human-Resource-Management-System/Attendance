@@ -57,16 +57,20 @@ public class EmployeeAttendanceDAOImpl implements EmployeeAttendanceDAO {
 	}
 
 	@Override
-	public List<Object[]> getPunchInAndPunchOutDataForMonthAndEmployee(int employeeId, int selectedMonth) {
-		String queryString = "SELECT ea.punchIn, ea.punchOut FROM EmployeeAttendance ea "
-				+ "WHERE ea.attendanceId.employeeId = :employeeId " + "AND MONTH(ea.punchIn) = :selectedMonth";
+	public List<Object[]> getPunchInAndPunchOutDataForYearAndMonthAndEmployee(int employeeId, int selectedYear, int selectedMonth) {
+	    String queryString = "SELECT ea.punchIn, ea.punchOut FROM EmployeeAttendance ea "
+	            + "WHERE ea.attendanceId.employeeId = :employeeId "
+	            + "AND YEAR(ea.punchIn) = :selectedYear "
+	            + "AND MONTH(ea.punchIn) = :selectedMonth";
 
-		Query query = entityManager.createQuery(queryString);
-		query.setParameter("employeeId", employeeId);
-		query.setParameter("selectedMonth", selectedMonth);
+	    Query query = entityManager.createQuery(queryString);
+	    query.setParameter("employeeId", employeeId);
+	    query.setParameter("selectedYear", selectedYear);
+	    query.setParameter("selectedMonth", selectedMonth);
 
-		List<Object[]> results = query.getResultList();
-		return results;
+	    List<Object[]> results = query.getResultList();
+	    return results;
 	}
+
 
 }
