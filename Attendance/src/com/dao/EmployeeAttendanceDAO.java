@@ -11,5 +11,5 @@ public interface EmployeeAttendanceDAO {
 
 	List<Object[]> getYesterdayPunchInAndPunchOut(int employeeId);
 
-	List<Object[]> getPunchInAndPunchOutDataForMonthAndEmployee(int employeeId, int selectedMonth);
+	List<Object[]> getPunchInAndPunchOutDataForYearAndMonthAndEmployee(int employeeId,int selectedYear, int selectedMonth);
 }

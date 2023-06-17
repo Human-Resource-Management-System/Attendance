@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,8 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dao.EmployeeAttendanceDAO;
 import com.google.gson.Gson;
 import com.models.AttendanceEvent;
+import com.models.AttendanceRequest;
 import com.models.EmployeeAttendance;
 import com.models.EmployeeAttendanceId;
+import com.models.EmployeeRequestResult;
 import com.services.EmployeeAttendanceService;
 
 @Controller
@@ -45,7 +49,7 @@ public class AttendanceController {
 	@Autowired
 	private EmployeeAttendanceDAO employeeAttendanceDAO;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/attendanceform", method = RequestMethod.GET)
 	public String attendanceform() {
 		return "attendanceform";
 	}
@@ -55,17 +59,43 @@ public class AttendanceController {
 		return "punchdata";
 	}
 
-	@RequestMapping(value = "/monthData", method = RequestMethod.GET)
-	public void monthPunchData() {
-		List<Object[]> results = employeeAttendanceDAO.getPunchInAndPunchOutDataForMonthAndEmployee(108, 6);
-		for (Object[] row : results) {
-			LocalDateTime punchIn = (LocalDateTime) row[0];
-			LocalDateTime punchOut = (LocalDateTime) row[1];
-			System.out.println(punchIn + "  " + punchOut);
-		}
-
+	
+	// employee side attendance
+	@RequestMapping(value = "/employeeAttendance", method = RequestMethod.GET)
+	public String employeeAttendanceForm() {
+		return "employeeAttendance";
 	}
+	
+	
+    // Admin side attendance 
+	@RequestMapping(value = "/adminAttendance", method = RequestMethod.GET)
+	public String adminAttendanceForm() {
+		return "adminAttendance";
+	}
+	
+	// to get attendance data
+	@RequestMapping(value = "/attendance", method = RequestMethod.POST)
+	public ResponseEntity<String> attendanceData(@ModelAttribute AttendanceRequest attendanceRequest) {
+	    int year = attendanceRequest.getYear();
+	    int month = attendanceRequest.getMonth();
+	    int id = attendanceRequest.getEmployeeid();
+	    
+	    System.out.println(year);
+	    System.out.println(month);
 
+	    List<Object[]> results = employeeAttendanceDAO.getPunchInAndPunchOutDataForYearAndMonthAndEmployee(id, year, month);
+	    for (Object[] row : results) {
+	        LocalDateTime punchIn = (LocalDateTime) row[0];
+	        LocalDateTime punchOut = (LocalDateTime) row[1];
+	        System.out.println(punchIn + "  " + punchOut);
+	    }
+
+	    EmployeeRequestResult response =  employeeAttendanceService.calculateAttendance(results);
+	    return ResponseEntity.ok(gson.toJson(response));
+	}
+	
+	
+	// to get punch data for graphs
 	@RequestMapping(value = "/punchData", method = RequestMethod.GET)
 	public ResponseEntity<String> getPunchData() {
 		List<AttendanceEvent> punchData = employeeAttendanceService.getYesterdayPunchData(1);
