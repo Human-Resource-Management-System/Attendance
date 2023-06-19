@@ -21,13 +21,11 @@
 
 
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName"
-			value="org.postgresql.Driver" />
-		<property name="url" value="jdbc:postgresql://localhost:5432/postgres" />
-		<property name="username" value="postgres" />
-		<property name="password" value="007" />
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://192.168.110.48:5432/plf_training" />
+		<property name="username" value="plf_training_admin" />
+		<property name="password" value="pff123" />
 	</bean>
 
 	<bean id="entityManagerFactory"
@@ -71,5 +69,6 @@
 			<bean id="response" class="com.models.EmployeeRequestResult" autowire="byName" />
 		
 	<bean id="gson" class="com.google.gson.Gson" autowire="byName" />
+	<bean id="employeeDAO" class="com.implementations.EmployeeDAOImpl" autowire="byName"/>
 
 </beans>

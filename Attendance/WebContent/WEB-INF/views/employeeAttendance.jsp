@@ -93,14 +93,9 @@ th {
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
+  <%@page import="java.util.List" %>
   
-  
-   <div class="empattendance">  
-     <!-- should handle the session for employee id -->
-     
-     <%      
-            session.setAttribute("employeeid", 1);
-      %>
+   <div class="empattendance">
 
 	<div class="attendance-container">
 		<h1>Attendance Details</h1>
@@ -109,8 +104,11 @@ th {
 			<h2>Year:</h2>
 			<div class="select-container">
 				<select id="yearSelect" class="month-select">
-					<option value="2023">2023</option>
 					<option value="2022">2022</option>
+					<% List<Integer> years = (List<Integer>)session.getAttribute("years");
+					   for(int i=years.size()-1;i>=0;i--){
+					%>  <option value="<%=years.get(i) %>"><%=years.get(i) %></option>
+					<%} %>
 				</select>
 			</div>
 

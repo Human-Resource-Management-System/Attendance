@@ -1,10 +1,12 @@
 package com.services;
 
-import java.time.LocalDateTime;
 import java.time.Duration;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +29,10 @@ public class EmployeeAttendanceService {
 	private EmployeeAttendanceDAO employeeAttendanceDAO;
 
 	@Autowired
-    private ApplicationContext context;
-	
-	
+	private ApplicationContext context;
+
 	private EmployeeRequestResult response;
-	
+
 	@Autowired
 	public EmployeeAttendanceService(EmployeeRequestResult response) {
 		this.response = response;
@@ -44,88 +45,87 @@ public class EmployeeAttendanceService {
 	}
 
 	public List<AttendanceEvent> getYesterdayPunchData(int employeeId) {
-        List<Object[]> results = employeeAttendanceDAO.getYesterdayPunchInAndPunchOut(employeeId);
+		List<Object[]> results = employeeAttendanceDAO.getYesterdayPunchInAndPunchOut(employeeId);
 
-        // Formatting the data required for the graphs
-        List<AttendanceEvent> formattedEvents = new ArrayList<>();
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("hh:mm a");
-        for (Object[] row : results) {
-            LocalDateTime punchIn = (LocalDateTime) row[0];
-            LocalDateTime punchOut = (LocalDateTime) row[1];
+		// Formatting the data required for the graphs
+		List<AttendanceEvent> formattedEvents = new ArrayList<>();
+		DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+		for (Object[] row : results) {
+			LocalDateTime punchIn = (LocalDateTime) row[0];
+			LocalDateTime punchOut = (LocalDateTime) row[1];
 
-            String formattedPunchIn = punchIn.format(outputFormatter);
-            String formattedPunchOut = punchOut.format(outputFormatter);
+			String formattedPunchIn = punchIn.format(outputFormatter);
+			String formattedPunchOut = punchOut.format(outputFormatter);
 
-            AttendanceEvent attendanceEvent = context.getBean(AttendanceEvent.class);
-            attendanceEvent.setTime(formattedPunchIn);
-            attendanceEvent.setEvent("Punch In");
-            formattedEvents.add(attendanceEvent);
+			AttendanceEvent attendanceEvent = context.getBean(AttendanceEvent.class);
+			attendanceEvent.setTime(formattedPunchIn);
+			attendanceEvent.setEvent("Punch In");
+			formattedEvents.add(attendanceEvent);
 
-            attendanceEvent = context.getBean(AttendanceEvent.class);
-            attendanceEvent.setTime(formattedPunchOut);
-            attendanceEvent.setEvent("Punch Out");
-            formattedEvents.add(attendanceEvent);
-        }
+			attendanceEvent = context.getBean(AttendanceEvent.class);
+			attendanceEvent.setTime(formattedPunchOut);
+			attendanceEvent.setEvent("Punch Out");
+			formattedEvents.add(attendanceEvent);
+		}
 
-        for (AttendanceEvent ae : formattedEvents) {
-            System.out.println(ae.getEvent() + " " + ae.getTime());
-        }
-        return formattedEvents;
-    }
-	
-	 public EmployeeRequestResult calculateAttendance(List<Object[]> punchData) {
-        int daysWithMinimumHours = 0;
+		for (AttendanceEvent ae : formattedEvents) {
+			System.out.println(ae.getEvent() + " " + ae.getTime());
+		}
+		return formattedEvents;
+	}
 
-        Map<LocalDateTime, Duration> workingHoursPerDay = new HashMap<>();
+	public EmployeeRequestResult calculateAttendance(List<Object[]> punchData) {
+		int daysWithMinimumHours = 0;
 
-        for (Object[] punches : punchData) {
-            LocalDateTime punchIn = (LocalDateTime)punches[0];
-            LocalDateTime punchOut = (LocalDateTime)punches[1];
+		Map<LocalDateTime, Duration> workingHoursPerDay = new HashMap<>();
 
-            if (punchIn == null || punchOut == null) {
-                continue; // Skip data with missing punch-in or punch-out
-            }
+		for (Object[] punches : punchData) {
+			LocalDateTime punchIn = (LocalDateTime) punches[0];
+			LocalDateTime punchOut = (LocalDateTime) punches[1];
 
-            Duration duration = Duration.between(punchIn, punchOut);
+			if (punchIn == null || punchOut == null) {
+				continue; // Skip data with missing punch-in or punch-out
+			}
 
-            LocalDateTime dateOnly = punchIn.toLocalDate().atStartOfDay();
+			Duration duration = Duration.between(punchIn, punchOut);
 
-            if (workingHoursPerDay.containsKey(dateOnly)) {
-                Duration totalDuration = workingHoursPerDay.get(dateOnly).plus(duration);
-                workingHoursPerDay.put(dateOnly, totalDuration);
-            } else {
-                workingHoursPerDay.put(dateOnly, duration);
-            }
-        }
+			LocalDateTime dateOnly = punchIn.toLocalDate().atStartOfDay();
 
-        for (Duration duration : workingHoursPerDay.values()) {
-            long hours = duration.toHours();
+			if (workingHoursPerDay.containsKey(dateOnly)) {
+				Duration totalDuration = workingHoursPerDay.get(dateOnly).plus(duration);
+				workingHoursPerDay.put(dateOnly, totalDuration);
+			} else {
+				workingHoursPerDay.put(dateOnly, duration);
+			}
+		}
 
-            if (hours >= 8) {
-                daysWithMinimumHours++;
-            }
-        }
+		for (Duration duration : workingHoursPerDay.values()) {
+			long hours = duration.toHours();
 
-        int totalDays = workingHoursPerDay.size();
-        double attendancePercentage = (double) daysWithMinimumHours / totalDays * 100;
+			if (hours >= 8) {
+				daysWithMinimumHours++;
+			}
+		}
 
-        if (Double.isNaN(attendancePercentage)) {
-            attendancePercentage = 0.0;
-        }
-        
-        System.out.println("no of days : "+totalDays);
-        System.out.println("days with minimum hours"+daysWithMinimumHours);
-        System.out.println("attendance percentage"+attendancePercentage);
-        
-        
-        response.setDayswithminhrs(daysWithMinimumHours);
-        response.setPercentage(attendancePercentage);
-        response.setTotaldays(totalDays);
-        
-        return response;
-       
-    }
-	
+		int totalDays = workingHoursPerDay.size();
+		double attendancePercentage = (double) daysWithMinimumHours / totalDays * 100;
+
+		if (Double.isNaN(attendancePercentage)) {
+			attendancePercentage = 0.0;
+		}
+
+		System.out.println("no of days : " + totalDays);
+		System.out.println("days with minimum hours" + daysWithMinimumHours);
+		System.out.println("attendance percentage" + attendancePercentage);
+
+		response.setDayswithminhrs(daysWithMinimumHours);
+		response.setPercentage(attendancePercentage);
+		response.setTotaldays(totalDays);
+
+		return response;
+
+	}
+
 	public LocalDateTime convertToDateTime(Cell cell) {
 		if (cell.getCellType() == CellType.NUMERIC) {
 			// Assuming the cell contains a date/time value
@@ -134,5 +134,23 @@ public class EmployeeAttendanceService {
 			// Handle other cell types or formats as needed
 			return null;
 		}
+	}
+
+	public List<Integer> getYears(Date joinDate) {
+
+		LocalDate join = joinDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate currentDate = LocalDate.now();
+
+		List<Integer> yearList = new ArrayList<>();
+
+		while (join.isBefore(currentDate) || join.isEqual(currentDate)) {
+			int year = join.getYear();
+			System.out.println(year);
+			yearList.add(year);
+			join = join.plusYears(1);
+		}
+
+		return yearList;
+
 	}
 }
