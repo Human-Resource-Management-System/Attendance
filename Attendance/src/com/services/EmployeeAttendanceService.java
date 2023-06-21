@@ -143,11 +143,12 @@ public class EmployeeAttendanceService {
 
 		List<Integer> yearList = new ArrayList<>();
 
-		while (join.isBefore(currentDate) || join.isEqual(currentDate)) {
-			int year = join.getYear();
-			System.out.println(year);
-			yearList.add(year);
-			join = join.plusYears(1);
+		int joinYear = join.getYear();
+		int currentYear = currentDate.getYear();
+
+		while (joinYear <= currentYear) {
+			yearList.add(joinYear);
+			joinYear++;
 		}
 
 		return yearList;

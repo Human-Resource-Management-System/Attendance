@@ -104,8 +104,7 @@ th {
 			<h2>Year:</h2>
 			<div class="select-container">
 				<select id="yearSelect" class="month-select">
-					<option value="2022">2022</option>
-					<% List<Integer> years = (List<Integer>)session.getAttribute("years");
+					<% List<Integer> years = (List<Integer>)request.getAttribute("years");
 					   for(int i=years.size()-1;i>=0;i--){
 					%>  <option value="<%=years.get(i) %>"><%=years.get(i) %></option>
 					<%} %>

@@ -106,11 +106,12 @@ th {
 				<input type="text" id="employeeIdInput" class="month-select" placeholder="Enter Employee ID">
 			</div>
 			
+			<div id="msg"></div>
+			
 			<h2>Year:</h2>
 			<div class="select-container">
 				<select id="yearSelect" class="month-select">
-					<option value="2023">2023</option>
-					<option value="2022">2022</option>
+
 				</select>
 			</div>
 
@@ -184,10 +185,41 @@ th {
 		// Add event listeners to the year, month, and employee ID input
 		$("#yearSelect").change(updateTableData);
 		$("#monthSelect").change(updateTableData);
-		$("#employeeIdInput").on("input", updateTableData);
+		$("#employeeIdInput").on("input", getYearsList);
 
-		// Initial table data update
-		updateTableData();
+		
+		function getYearsList(){
+			
+			var employeeId = $("#employeeIdInput").val();
+			
+			$("#msg").empty();
+			
+			$.ajax({
+				url:"getYearsList",
+				type:"POST",
+				data: {employeeid:employeeId},
+				success:function(response){
+					console.log(response);
+					var yearsList = JSON.parse(response);
+					var selectElement = $('#yearSelect'); 
+					  selectElement.empty();
+					  for (var i = 0; i < yearsList.length; i++) {
+					    var year = yearsList[i];
+					    var optionElement = $('<option>').val(year).text(year);
+					    selectElement.append(optionElement);
+					  }
+					
+				},
+				error:function(error){
+					var selectElement = $('#yearSelect'); 
+					  selectElement.empty();
+					$("#msg").html("No Employee Found");
+				}
+			
+			});
+		}
+		
+		
 	</script>
 	
 	</div>

@@ -75,11 +75,17 @@ public class AttendanceController {
 		session.setAttribute("employeeid", 1);
 		int id = (int) session.getAttribute("employeeid");
 		Employee employee = employeeDAO.getEmployee(id);
+		System.out.println(employee);
 		Date joinDate = employee.getEmplJondate();
 		System.out.println(joinDate);
 		List<Integer> yearsList = employeeAttendanceService.getYears(joinDate);
+
+		for (Integer i : yearsList)
+			System.out.println(i);
+
 		model.addAttribute("years", yearsList);
 		return "employeeAttendance";
+
 	}
 
 	// Admin side attendance
@@ -160,4 +166,22 @@ public class AttendanceController {
 		return ResponseEntity.ok("succesfully updated");
 	}
 
+	@RequestMapping(value = "/getYearsList", method = RequestMethod.POST)
+	public ResponseEntity<String> getYearsOfEmployee(@ModelAttribute AttendanceRequest attendanceRequest) {
+		int id = attendanceRequest.getEmployeeid();
+		System.out.println(id);
+		Employee employee = employeeDAO.getEmployee(id);
+
+		if (employee == null)
+			return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+
+		System.out.println(employee);
+		Date joinDate = employee.getEmplJondate();
+		System.out.println(joinDate);
+		List<Integer> yearsList = employeeAttendanceService.getYears(joinDate);
+
+		System.out.println(gson.toJson(yearsList));
+
+		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(yearsList));
+	}
 }

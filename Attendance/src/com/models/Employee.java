@@ -10,6 +10,19 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "hrms_employees")
 public class Employee {
+	@Override
+	public String toString() {
+		return "Employee [emplId=" + emplId + ", emplFirstname=" + emplFirstname + ", emplLastname=" + emplLastname
+				+ ", emplSurname=" + emplSurname + ", emplRmanagerEmplId=" + emplRmanagerEmplId + ", emplHrEmplId="
+				+ emplHrEmplId + ", emplJbgrId=" + emplJbgrId + ", emplPhoto=" + emplPhoto + ", emplJondate="
+				+ emplJondate + ", emplDob=" + emplDob + ", emplDesignation=" + emplDesignation + ", basic_sal="
+				+ basic_sal + ", variable_sal=" + variable_sal + ", fixed_sal=" + fixed_sal + ", ctc=" + ctc
+				+ ", emplOffemail=" + emplOffemail + ", emplPemail=" + emplPemail + ", emplMobile=" + emplMobile
+				+ ", emplAlemail=" + emplAlemail + ", emplBloodgroup=" + emplBloodgroup + ", emplGender=" + emplGender
+				+ ", emplAddress=" + emplAddress + ", emplFname=" + emplFname + ", emplLuudate=" + emplLuudate
+				+ ", emplLuuser=" + emplLuuser + "]";
+	}
+
 	@Id
 	@Column(name = "empl_id")
 	private int emplId;
